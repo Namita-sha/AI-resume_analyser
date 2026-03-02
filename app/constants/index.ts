@@ -3,156 +3,105 @@ export const resumes: Resume[] = [
     id: "1",
     companyName: "Google",
     jobTitle: "Frontend Developer",
-    imagePath: "/images/resume-1.png",
+    imagePath: "/images/resume_01.png",
     resumePath: "/resumes/resume-1.pdf",
     feedback: {
       overallScore: 85,
-      ATS: {
-        score: 90,
-        tips: [],
-      },
-      toneAndStyle: {
-        score: 90,
-        tips: [],
-      },
-      content: {
-        score: 90,
-        tips: [],
-      },
-      structure: {
-        score: 90,
-        tips: [],
-      },
-      skills: {
-        score: 90,
-        tips: [],
-      },
+      ATS: { score: 90, tips: [] },
+      toneAndStyle: { score: 90, tips: [] },
+      content: { score: 90, tips: [] },
+      structure: { score: 90, tips: [] },
+      skills: { score: 90, tips: [] },
     },
   },
   {
     id: "2",
     companyName: "Microsoft",
     jobTitle: "Cloud Engineer",
-    imagePath: "/images/resume-2.png",
+    imagePath: "/images/resume_02.png",
     resumePath: "/resumes/resume-2.pdf",
     feedback: {
       overallScore: 55,
-      ATS: {
-        score: 90,
-        tips: [],
-      },
-      toneAndStyle: {
-        score: 90,
-        tips: [],
-      },
-      content: {
-        score: 90,
-        tips: [],
-      },
-      structure: {
-        score: 90,
-        tips: [],
-      },
-      skills: {
-        score: 90,
-        tips: [],
-      },
+      ATS: { score: 55, tips: [] },
+      toneAndStyle: { score: 55, tips: [] },
+      content: { score: 55, tips: [] },
+      structure: { score: 55, tips: [] },
+      skills: { score: 55, tips: [] },
     },
   },
   {
     id: "3",
     companyName: "Apple",
     jobTitle: "iOS Developer",
-    imagePath: "/images/resume-3.png",
+    imagePath: "/images/resume_03.png",
     resumePath: "/resumes/resume-3.pdf",
     feedback: {
       overallScore: 75,
-      ATS: {
-        score: 90,
-        tips: [],
-      },
-      toneAndStyle: {
-        score: 90,
-        tips: [],
-      },
-      content: {
-        score: 90,
-        tips: [],
-      },
-      structure: {
-        score: 90,
-        tips: [],
-      },
-      skills: {
-        score: 90,
-        tips: [],
-      },
+      ATS: { score: 75, tips: [] },
+      toneAndStyle: { score: 75, tips: [] },
+      content: { score: 75, tips: [] },
+      structure: { score: 75, tips: [] },
+      skills: { score: 75, tips: [] },
     },
   },
 ];
 
-export const AIResponseFormat = `
-      interface Feedback {
-      overallScore: number; //max 100
-      ATS: {
-        score: number; //rate based on ATS suitability
-        tips: {
-          type: "good" | "improve";
-          tip: string; //give 3-4 tips
-        }[];
-      };
-      toneAndStyle: {
-        score: number; //max 100
-        tips: {
-          type: "good" | "improve";
-          tip: string; //make it a short "title" for the actual explanation
-          explanation: string; //explain in detail here
-        }[]; //give 3-4 tips
-      };
-      content: {
-        score: number; //max 100
-        tips: {
-          type: "good" | "improve";
-          tip: string; //make it a short "title" for the actual explanation
-          explanation: string; //explain in detail here
-        }[]; //give 3-4 tips
-      };
-      structure: {
-        score: number; //max 100
-        tips: {
-          type: "good" | "improve";
-          tip: string; //make it a short "title" for the actual explanation
-          explanation: string; //explain in detail here
-        }[]; //give 3-4 tips
-      };
-      skills: {
-        score: number; //max 100
-        tips: {
-          type: "good" | "improve";
-          tip: string; //make it a short "title" for the actual explanation
-          explanation: string; //explain in detail here
-        }[]; //give 3-4 tips
-      };
-    }`;
-
 export const prepareInstructions = ({
   jobTitle,
   jobDescription,
-  AIResponseFormat,
 }: {
   jobTitle: string;
   jobDescription: string;
-  AIResponseFormat: string;
 }) =>
-  `You are an expert in ATS (Applicant Tracking System) and resume analysis.
-  Please analyze and rate this resume and suggest how to improve it.
-  The rating can be low if the resume is bad.
-  Be thorough and detailed. Don't be afraid to point out any mistakes or areas for improvement.
-  If there is a lot to improve, don't hesitate to give low scores. This is to help the user to improve their resume.
-  If available, use the job description for the job user is applying to to give more detailed feedback.
-  If provided, take the job description into consideration.
-  The job title is: ${jobTitle}
-  The job description is: ${jobDescription}
-  Provide the feedback using the following format: ${AIResponseFormat}
-  Return the analysis as a JSON object, without any other text and without the backticks.
-  Do not include any other text or comments.`;
+  `You are an expert ATS and resume analyzer.
+Analyze the resume and return ONLY a JSON object. No extra text. No markdown. No backticks. No comments.
+The JSON must use EXACTLY these field names and structure:
+
+{
+  "overallScore": <number 0-100>,
+  "ATS": {
+    "score": <number 0-100>,
+    "tips": [
+      { "type": "good", "tip": "<short title>", "explanation": "<detailed explanation>" },
+      { "type": "improve", "tip": "<short title>", "explanation": "<detailed explanation>" }
+    ]
+  },
+  "toneAndStyle": {
+    "score": <number 0-100>,
+    "tips": [
+      { "type": "good", "tip": "<short title>", "explanation": "<detailed explanation>" },
+      { "type": "improve", "tip": "<short title>", "explanation": "<detailed explanation>" }
+    ]
+  },
+  "content": {
+    "score": <number 0-100>,
+    "tips": [
+      { "type": "good", "tip": "<short title>", "explanation": "<detailed explanation>" },
+      { "type": "improve", "tip": "<short title>", "explanation": "<detailed explanation>" }
+    ]
+  },
+  "structure": {
+    "score": <number 0-100>,
+    "tips": [
+      { "type": "good", "tip": "<short title>", "explanation": "<detailed explanation>" },
+      { "type": "improve", "tip": "<short title>", "explanation": "<detailed explanation>" }
+    ]
+  },
+  "skills": {
+    "score": <number 0-100>,
+    "tips": [
+      { "type": "good", "tip": "<short title>", "explanation": "<detailed explanation>" },
+      { "type": "improve", "tip": "<short title>", "explanation": "<detailed explanation>" }
+    ]
+  }
+}
+
+IMPORTANT RULES:
+- Use EXACTLY these field names: overallScore, ATS, toneAndStyle, content, structure, skills
+- Each section needs 3-4 tips with mix of "good" and "improve"
+- type must be ONLY "good" or "improve"
+- Do NOT use: overall_rating, ats_score, strengths, weaknesses, or any other field names
+- Return ONLY the raw JSON, absolutely nothing else
+
+Job title: ${jobTitle}
+Job description: ${jobDescription}`;

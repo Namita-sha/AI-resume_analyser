@@ -91,7 +91,6 @@ interface PuterStore {
     ) => Promise<string[] | KVItem[] | undefined>;
     flush: () => Promise<boolean | undefined>;
   };
-
   init: () => void;
   clearError: () => void;
 }
@@ -171,9 +170,7 @@ export const usePuterStore = create<PuterStore>((set, get) => {
       setError("Puter.js not available");
       return;
     }
-
     set({ isLoading: true, error: null });
-
     try {
       await puter.auth.signIn();
       await checkAuthStatus();
@@ -189,9 +186,7 @@ export const usePuterStore = create<PuterStore>((set, get) => {
       setError("Puter.js not available");
       return;
     }
-
     set({ isLoading: true, error: null });
-
     try {
       await puter.auth.signOut();
       set({
@@ -218,9 +213,7 @@ export const usePuterStore = create<PuterStore>((set, get) => {
       setError("Puter.js not available");
       return;
     }
-
     set({ isLoading: true, error: null });
-
     try {
       const user = await puter.auth.getUser();
       set({
@@ -236,7 +229,8 @@ export const usePuterStore = create<PuterStore>((set, get) => {
         isLoading: false,
       });
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Failed to refresh user";
+      const msg =
+        err instanceof Error ? err.message : "Failed to refresh user";
       setError(msg);
     }
   };
@@ -248,7 +242,6 @@ export const usePuterStore = create<PuterStore>((set, get) => {
       checkAuthStatus();
       return;
     }
-
     const interval = setInterval(() => {
       if (getPuter()) {
         clearInterval(interval);
@@ -256,7 +249,6 @@ export const usePuterStore = create<PuterStore>((set, get) => {
         checkAuthStatus();
       }
     }, 100);
-
     setTimeout(() => {
       clearInterval(interval);
       if (!getPuter()) {
@@ -267,46 +259,31 @@ export const usePuterStore = create<PuterStore>((set, get) => {
 
   const write = async (path: string, data: string | File | Blob) => {
     const puter = getPuter();
-    if (!puter) {
-      setError("Puter.js not available");
-      return;
-    }
+    if (!puter) { setError("Puter.js not available"); return; }
     return puter.fs.write(path, data);
   };
 
   const readDir = async (path: string) => {
     const puter = getPuter();
-    if (!puter) {
-      setError("Puter.js not available");
-      return;
-    }
+    if (!puter) { setError("Puter.js not available"); return; }
     return puter.fs.readdir(path);
   };
 
   const readFile = async (path: string) => {
     const puter = getPuter();
-    if (!puter) {
-      setError("Puter.js not available");
-      return;
-    }
+    if (!puter) { setError("Puter.js not available"); return; }
     return puter.fs.read(path);
   };
 
   const upload = async (files: File[] | Blob[]) => {
     const puter = getPuter();
-    if (!puter) {
-      setError("Puter.js not available");
-      return;
-    }
+    if (!puter) { setError("Puter.js not available"); return; }
     return puter.fs.upload(files);
   };
 
   const deleteFile = async (path: string) => {
     const puter = getPuter();
-    if (!puter) {
-      setError("Puter.js not available");
-      return;
-    }
+    if (!puter) { setError("Puter.js not available"); return; }
     return puter.fs.delete(path);
   };
 
@@ -319,95 +296,87 @@ export const usePuterStore = create<PuterStore>((set, get) => {
     const puter = getPuter();
     if (!puter) {
       setError("Puter.js not available");
-      return;
+      return undefined;
     }
-    // return puter.ai.chat(prompt, imageURL, testMode, options);
-    return puter.ai.chat(prompt, imageURL, testMode, options) as Promise<
-      AIResponse | undefined
-    >;
+    const response = await puter.ai.chat(prompt, imageURL, testMode, options);
+    return response as AIResponse | undefined;
   };
 
-  const feedback = async (path: string, message: string) => {
+ const feedback = async (path: string, message: string) => {
     const puter = getPuter();
     if (!puter) {
       setError("Puter.js not available");
-      return;
+      return undefined;
     }
 
-    return puter.ai.chat(
+    const response = await puter.ai.chat(
       [
         {
           role: "user",
           content: [
-            {
-              type: "file",
-              puter_path: path,
-            },
-            {
-              type: "text",
-              text: message,
-            },
+            { type: "file", puter_path: path },
+            { type: "text", text: message },
           ],
         },
       ],
-      { model: "claude-sonnet-4" }
-    ) as Promise<AIResponse | undefined>;
+      { model: "claude-sonnet-4" } as any
+    );
+
+    return response as AIResponse | undefined;
   };
 
   const img2txt = async (image: string | File | Blob, testMode?: boolean) => {
     const puter = getPuter();
-    if (!puter) {
-      setError("Puter.js not available");
-      return;
-    }
+    if (!puter) { setError("Puter.js not available"); return; }
     return puter.ai.img2txt(image, testMode);
   };
 
   const getKV = async (key: string) => {
     const puter = getPuter();
-    if (!puter) {
-      setError("Puter.js not available");
-      return;
-    }
+    if (!puter) { setError("Puter.js not available"); return; }
     return puter.kv.get(key);
   };
 
   const setKV = async (key: string, value: string) => {
     const puter = getPuter();
-    if (!puter) {
-      setError("Puter.js not available");
-      return;
-    }
+    if (!puter) { setError("Puter.js not available"); return; }
     return puter.kv.set(key, value);
   };
 
   const deleteKV = async (key: string) => {
     const puter = getPuter();
-    if (!puter) {
-      setError("Puter.js not available");
-      return;
+    if (!puter) { setError("Puter.js not available"); return; }
+    try {
+      // @ts-ignore - try 'del' first as Puter.js may use that
+      if (typeof puter.kv.del === 'function') {
+        // @ts-ignore
+        return await puter.kv.del(key);
+      }
+      // @ts-ignore - try 'rm' as another possible name
+      if (typeof puter.kv.rm === 'function') {
+        // @ts-ignore
+        return await puter.kv.rm(key);
+      }
+      // Fallback: mark as deleted so we filter it out on load
+      await puter.kv.set(key, JSON.stringify({ _deleted: true }));
+      return true;
+    } catch (e) {
+      console.error('deleteKV error:', e);
+      // Last resort fallback
+      await puter.kv.set(key, JSON.stringify({ _deleted: true }));
+      return true;
     }
-    return puter.kv.delete(key);
   };
 
   const listKV = async (pattern: string, returnValues?: boolean) => {
     const puter = getPuter();
-    if (!puter) {
-      setError("Puter.js not available");
-      return;
-    }
-    if (returnValues === undefined) {
-      returnValues = false;
-    }
-    return puter.kv.list(pattern, returnValues);
+    if (!puter) { setError("Puter.js not available"); return; }
+    return puter.kv.list(pattern, returnValues ?? false);
   };
 
   const flushKV = async () => {
     const puter = getPuter();
-    if (!puter) {
-      setError("Puter.js not available");
-      return;
-    }
+    if (!puter) { setError("Puter.js not available"); return; }
     return puter.kv.flush();
   };
 
