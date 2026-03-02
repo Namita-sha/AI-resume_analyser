@@ -34,5 +34,5 @@ npm run dev
 ```
 ## 🌍 Live Demo
 
-- Web App: https://ai-resume-analyser-eta-hazel.vercel.app/
+- Web App:https://ai-resume-analyser-eta-hazel.vercel.app/
 - Puter App: https://puter.com/app/hirelens-2
